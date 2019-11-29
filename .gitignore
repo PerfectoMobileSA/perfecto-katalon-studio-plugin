@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+.gradle
+bin
+Drivers/*.jar
+Reports
+Libs
+output
+!output/.gitkeep
+/build
+.classpath
+.project
