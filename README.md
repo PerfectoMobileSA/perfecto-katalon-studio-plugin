@@ -95,4 +95,4 @@ Save the Profile once the global variables are added.
  <img src="https://github.com/dsatike-perfecto/perfecto-katalon-studio-plugin/blob/master/DOC/img/12.png" height="240" width="760">
  <img src="https://github.com/dsatike-perfecto/perfecto-katalon-studio-plugin/blob/master/DOC/img/13.png" height="360" width="760">
  <img src="https://github.com/dsatike-perfecto/perfecto-katalon-studio-plugin/blob/master/DOC/img/14.png" height="300" width="760">
-Kindly reach out to [Professional Services](https://www.perfecto.io/services/professional-services-implementation) team of Perfecto to implement this in your Organization.
+Kindly reach out to Professional Services team of Perfecto to implement this in your Organization.
