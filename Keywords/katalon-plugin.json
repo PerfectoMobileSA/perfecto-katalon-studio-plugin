@@ -1,0 +1,109 @@
+{
+   "name": "Perfecto Integration",
+   "listeners": ["PerfectoTestListener"],
+   "configuration": {
+      "settingId": "com.kms.katalon.keyword.Perfecto-keywords",
+      "settingPage": {
+         "name": "Perfecto Integration",
+         "components": [
+            {
+                "key": "configName",
+                "type": "text",
+                "label": "Config Name *",
+                "defaultValue": "default"
+            },
+            {
+               "key": "cloud",
+               "type": "text",
+               "label": "Cloud *",
+               "defaultValue": "yourcloud.perfectomobile.com *"
+            },
+            {
+               "key": "securityToken",
+               "type": "secret",
+               "label": "Security Token *",
+               "defaultValue": ""
+            },
+            {
+            	"key": "automationName",
+               "type": "text",
+               "label": "Automation Name ( Appium/Selenium ) *",
+               "defaultValue": "Appium"
+            },
+			{
+            	"key": "fastWeb",
+               "type": "text",
+               "label": "Fast Web (true/false) *",
+               "defaultValue": "false"
+            },
+            {
+               "key": "platform",
+               "type": "text",
+               "label": "Platform *",
+               "defaultValue": "iOS"
+            },
+            {
+               "key": "platformVersion",
+               "type": "text",
+               "label": "Platform Version",
+               "defaultValue": ""
+            },
+            {
+               "key": "deviceName",
+               "type": "text",
+               "label": "Device Name",
+               "defaultValue": ""
+            },
+            {
+               "key": "manufacturer",
+               "type": "text",
+               "label": "Manufacturer",
+               "defaultValue": "Apple"
+            },
+            {
+               "key": "model",
+               "type": "text",
+               "label": "Model",
+               "defaultValue": "iPhone-8"
+            },
+            {
+               "key": "browserName",
+               "type": "text",
+               "label": "Browser Name",
+               "defaultValue": "mobileOS"
+            },
+            {
+               "key": "browserVersion",
+               "type": "text",
+               "label": "Browser Version",
+               "defaultValue": ""
+            },
+            
+            {
+            	"key": "additionalCapabilities",
+               "type": "text",
+               "label": "Additional Capabilities",
+               "defaultValue": "report.tags=test,katalon"
+            },
+            {
+            	"key": "helper",
+               "type": "label",
+               "label": "                                                    	Make sure to click on  -> 'Generate Perfecto Custom Profile' button to generate your custom profile!"
+            },
+            {
+            	"key": "legend",
+               "type": "label",
+               "label": "Note: * (Asterisk) denotes mandatory fields"
+            },
+            {
+               "key": "Perfecto Desired Capabilities Generator",
+               "type": "button",
+               "label": "--------------------------------------------------->>>> Generate Perfecto Custom Profile <<<<---------------------------------------------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ",
+
+	           "implementationClassPath": "com.kms.katalon.keyword.perfecto.PerfectoEventHandler",
+               "defaultValue": ""
+            }
+         ]
+      }
+   }
+}
