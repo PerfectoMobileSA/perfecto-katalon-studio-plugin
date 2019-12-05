@@ -78,9 +78,7 @@ class PerfectoTestListener {
 			}else{
 				reportiumClient.testStop(TestResultFactory.createFailure(testCaseContext.getTestCaseStatus(), new Throwable(testCaseContext.getMessage())))
 			}
-
-		}
-		try{
+try{
 			MobileDriverFactory.closeDriver()
 		}catch(Exception a){}
 		try{
@@ -88,5 +86,7 @@ class PerfectoTestListener {
 				DriverFactory.getWebDriver().quit()
 			}}
 		catch(Exception e){}
+		}
+		
 	}
 }
