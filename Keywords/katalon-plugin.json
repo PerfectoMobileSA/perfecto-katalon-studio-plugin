@@ -16,7 +16,7 @@
                "key": "cloud",
                "type": "text",
                "label": "Cloud *",
-               "defaultValue": "yourcloud.perfectomobile.com *"
+               "defaultValue": "yourcloud.perfectomobile.com"
             },
             {
                "key": "securityToken",
