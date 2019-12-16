@@ -150,9 +150,14 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 	 * @return
 	 */
 	private static ReportiumClient createReportiumClient(WebDriver driver) {
+		String projectName = GlobalVariable.projectName != '' ? GlobalVariable.projectName : "Sample project"
+		String projectVersion = GlobalVariable.projectVersion != '' ? GlobalVariable.projectVersion : "1.0"
+		if(System.getProperty("jobName") != null){
+			GlobalVariable.jobName = System.getProperty("jobName")
+		}
 		PerfectoExecutionContext perfectoExecutionContext = new PerfectoExecutionContextBuilder()
 				.withWebDriver(driver)
-				.withProject(new Project("Sample Reportium project", "1.0"))
+				.withProject(new Project(projectName, projectVersion))
 				.withJob(new Job((String)GlobalVariable.jobName, (Integer)GlobalVariable.jobNumber).withBranch("master"))
 				.build();
 		return new ReportiumClientFactory().createPerfectoReportiumClient(perfectoExecutionContext);
