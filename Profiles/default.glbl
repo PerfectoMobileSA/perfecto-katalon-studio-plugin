@@ -21,12 +21,22 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>13</initValue>
+      <initValue>14</initValue>
       <name>jobNumber</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
       <initValue>'PUBLIC:ExpenseTracker/Native/ExpenseAppVer1.0.apk'</initValue>
       <name>appPath</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'TestProject'</initValue>
+      <name>projectName</name>
+   </GlobalVariableEntity>
+   <GlobalVariableEntity>
+      <description></description>
+      <initValue>'1.1'</initValue>
+      <name>projectVersion</name>
    </GlobalVariableEntity>
 </GlobalVariableEntities>

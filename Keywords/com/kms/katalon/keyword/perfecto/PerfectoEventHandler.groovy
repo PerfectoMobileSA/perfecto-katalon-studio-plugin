@@ -40,8 +40,8 @@ public class PerfectoEventHandler implements IControlSelectionEventHandler {
 			customCapabilities['model'] = dataFields.getOrDefault("model","");
 			customCapabilities['deviceName'] = dataFields.getOrDefault("deviceName", "");
 			customCapabilities['manufacturer'] = dataFields.getOrDefault("manufacturer","");
-			customCapabilities['automationName'] = dataFields.getOrDefault("automationName","");
 		}
+		customCapabilities['automationName'] = dataFields.getOrDefault("automationName","");
 		customCapabilities['remoteWebDriverType'] = dataFields.getOrDefault("automationName","");
 		String additionalCapabilities = dataFields.getOrDefault("additionalCapabilities","");
 		for (String var in additionalCapabilities.split(";")) {
