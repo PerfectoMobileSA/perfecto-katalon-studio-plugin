@@ -26,7 +26,7 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'PUBLIC:ExpenseTracker/Native/ExpenseAppVer1.0.apk'</initValue>
+      <initValue>'PUBLIC:Calculator.apk'</initValue>
       <name>appPath</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>

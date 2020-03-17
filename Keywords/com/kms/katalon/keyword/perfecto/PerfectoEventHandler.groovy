@@ -61,6 +61,7 @@ public class PerfectoEventHandler implements IControlSelectionEventHandler {
 			customCapabilities['remoteWebDriverUrl'] = "https://"+dataFields.getOrDefault("cloud", "")+"/nexperience/perfectomobile/wd/hub";
 		}
 		customCapabilities['cloudURL'] = customCapabilities['remoteWebDriverUrl'];
+		customCapabilities['cloud'] = dataFields.getOrDefault("cloud", "");
 		profile.setName(PerfectoKeywords.PERFECTO_RUN_CONFIG_NAME + configName);
 		profile.setDriverType("Remote");
 		profile.setDesiredCapabilities(customCapabilities);
