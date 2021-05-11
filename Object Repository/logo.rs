@@ -6,12 +6,11 @@
    <elementGuidId>1d6d62a7-d5fd-42f0-9159-e92363ab78d1</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//*[@class=&quot;custom-logo&quot; or @class=&quot;attachment-full size-full&quot;]</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@class=&quot;custom-logo&quot;]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

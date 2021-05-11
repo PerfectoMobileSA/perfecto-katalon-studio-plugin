@@ -6,12 +6,11 @@
    <elementGuidId>9b4d226b-0cd0-4970-a3b6-0b37642f2733</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//*[@class=&quot;hamburger-box&quot; or @class=&quot;eicon-menu-bar&quot;]</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@class=&quot;hamburger-box&quot;]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

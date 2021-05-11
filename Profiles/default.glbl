@@ -21,12 +21,12 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>14</initValue>
+      <initValue>19</initValue>
       <name>jobNumber</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>'PUBLIC:Calculator.apk'</initValue>
+      <initValue>'PUBLIC:ExpenseAppVer1.0.apk'</initValue>
       <name>appPath</name>
    </GlobalVariableEntity>
    <GlobalVariableEntity>

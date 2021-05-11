@@ -9,3 +9,7 @@ output
 /build
 .classpath
 .project
+settings/external/com.kms.katalon.keyword.Perfecto-keywords.properties
+settings/external/execution/perfecto_windows_chrome/com.kms.katalon.core.webui.remote.properties
+settings/internal/com.kms.katalon.core.webui.remote.properties
+Test Suites/SuiteRun.ts

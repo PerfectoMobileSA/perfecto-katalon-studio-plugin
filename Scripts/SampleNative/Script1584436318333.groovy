@@ -12,6 +12,7 @@ import com.kms.katalon.core.testdata.TestData as TestData
 import com.kms.katalon.core.testobject.ConditionType as ConditionType
 import com.kms.katalon.core.testobject.TestObject as TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
+import com.kms.katalon.core.webui.driver.DriverFactory
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import internal.GlobalVariable as GlobalVariable
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
@@ -22,52 +23,38 @@ import io.appium.java_client.android.*
 import com.kms.katalon.core.appium.driver.AppiumDriverManager as AppiumDriverManager
 
 // the below function will upload Calculator apk from apk folder into perfecto media repository path mentioned in the global variable: appPath
-PerfectoKeywords.uploadMedia((((System.getProperty('user.dir') + File.separator) + 'apk') + File.separator) + 'Calculator.apk', 
+PerfectoKeywords.uploadMedia((((System.getProperty('user.dir') + File.separator) + 'apk') + File.separator) + 'ExpenseAppVer1.0.apk', 
     GlobalVariable.appPath)
 
-//Starts the calculator app
-PerfectoKeywords.startApplication(((GlobalVariable.appPath) as String))
+//Starts the expensetracker app
+PerfectoKeywords.startApplication(GlobalVariable.appPath)
 
-PerfectoKeywords.stepStart('Verify Sample App is loaded')
+PerfectoKeywords.stepStart("Enter email");
 
-Mobile.switchToNative()
+Mobile.tap(findTestObject('Native/expense-objects/android.widget.EditText0 - Email'), 0)
 
-//Creates a run time object for identifying button 1 in calculator
-one = new TestObject('TestObjectID')
+Mobile.setText(findTestObject('Native/expense-objects/android.widget.EditText0 - Email'), 'test@perfecto.com', 0)
 
-one.addProperty('xpath', ConditionType.EQUALS, '//android.widget.Button[@text=\'1\']', true)
+PerfectoKeywords.stepStart("Enter password");
 
-PerfectoKeywords.reportiumAssert('Calculator app is loaded', Mobile.verifyElementVisible(one, 10))
+Mobile.setText(findTestObject('Native/expense-objects/android.widget.EditText0 - Password'), 'test123', 0)
 
-PerfectoKeywords.stepStart('Sample actions')
+PerfectoKeywords.stepStart("Click login");
 
-Mobile.tap(one, 10)
+Mobile.tap(findTestObject('Native/expense-objects/android.widget.Button0 - LOGIN'), 0)
 
-//Uses Perfecto's OCR solution to click on X in calculator
-PerfectoKeywords.ocrClick('X')
+res = Mobile.verifyElementVisible(findTestObject('Native/expense-objects/android.widget.TextView0 - Expenses'), 2)
 
-//Creates a run time object for identifying button 2 in calculator
-two = new TestObject('TestObjectID')
+PerfectoKeywords.reportiumAssert("Verify Login is Successful.", res);
 
-two.addProperty('xpath', ConditionType.EQUALS, '//android.widget.Button[@text=\'2\']', true)
+Mobile.tap(findTestObject('Object Repository/Native/expense-objects/android.widget.ImageButton0') ,0)
 
-Mobile.tap(two, 10)
+Mobile.tap(findTestObject('Object Repository/Native/expense-objects/android.widget.FrameLayout0'), 0)
 
-//Creates a run time object for identifying button = in calculator
-equal = new TestObject('TestObjectID')
+Mobile.tap(findTestObject('Object Repository/Native/expense-objects/android.widget.TextView0 - Flight'), 0)
 
-equal.addProperty('xpath', ConditionType.EQUALS, '//android.widget.Button[@text=\'=\']', true)
+Mobile.sendKeys(findTestObject('Object Repository/Native/expense-objects/android.widget.EditText0 - 0.00'), "100")
 
-Mobile.tap(equal, 10)
+Mobile.tap(findTestObject('Object Repository/Native/expense-objects/android.widget.Button0 - Save'), 0)
 
-//Creates a run time object for identifying result in calculator
-result = new TestObject('TestObjectID')
-
-result.addProperty('xpath', ConditionType.EQUALS, '//*[@resource-id=\'com.google.android.calculator:id/result_final\']', 
-    true)
-
-String result = Mobile.getText(result, 10)
-
-// Verifies the result and reports the assertion flag to Perfecto's Smart reporting.
-PerfectoKeywords.reportiumAssert('Multiplication happened as expected', result.equals('2'))
 

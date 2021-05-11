@@ -6,12 +6,11 @@
    <elementGuidId>535e6597-7c12-4303-aebf-f289342a259b</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//*[@class=&quot;mobile-menu&quot; or @class='eicon-menu-bar']</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@class=&quot;mobile-menu&quot;]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
