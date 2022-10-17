@@ -6,7 +6,7 @@
    <UUID>247bd11e-4dba-4ba8-827f-73c88168300e</UUID>
    <migratedVersion>5.9.0</migratedVersion>
    <pageLoadTimeout>0</pageLoadTimeout>
-   <projectFileLocation>/Users/dushyantanmac/Desktop/Perfecto/Integrations/Katalon/perfecto-katalon-studio-plugin/PerfectoMobile-Katalon-Plugin.prj</projectFileLocation>
+   <projectFileLocation>/Users/rajesh/Katalon Studio/perfecto-katalon-studio-plugin/PerfectoMobile-Katalon-Plugin.prj</projectFileLocation>
    <sourceContent>
       <sourceFolderList>
          <sourceFolderConfiguration>
@@ -25,5 +25,6 @@
          </systemFolderConfiguration>
       </systemFolderList>
    </sourceContent>
+   <timeStampInProperties>true</timeStampInProperties>
    <type>GENERIC</type>
 </Project>
