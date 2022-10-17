@@ -44,19 +44,27 @@ class PerfectoTestListener {
 			if(runConfigName.toLowerCase().startsWith(PerfectoKeywords.PERFECTO_RUN_CONFIG_NAME)){
 				KeywordUtil.logInfo("[PERFECTO] Auto updating result status")
 				reportiumClient = (ReportiumClient)GlobalVariable.reportiumClient
-				KeywordUtil.logInfo("Result link: " + reportiumClient.getReportUrl())
-				if (testCaseContext.getTestCaseStatus().equals("PASSED")) {
-					reportiumClient.testStop(TestResultFactory.createSuccess())
-				}else{
-					reportiumClient.testStop(TestResultFactory.createFailure(testCaseContext.getTestCaseStatus(), new Throwable(testCaseContext.getMessage())))
+				try {
+					KeywordUtil.logInfo("Result link: " + reportiumClient.getReportUrl())
+					if (testCaseContext.getTestCaseStatus().equals("PASSED")) {
+						reportiumClient.testStop(TestResultFactory.createSuccess())
+					}else{
+						reportiumClient.testStop(TestResultFactory.createFailure(testCaseContext.getTestCaseStatus(), new Throwable(testCaseContext.getMessage())))
+					}
+				} catch(org.openqa.selenium.NoSuchSessionException e) {
+					KeywordUtil.logInfo("report object is already closed")
 				}
 			}
 			Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
 			String browserName = (String)caps.get("browserName")
-			if(browserName=="") {
-				AppiumDriverManager.closeDriver()
-			}else {
-				WebUI.closeBrowser()
-			}
+//			try {
+				if(browserName=="") {
+					AppiumDriverManager.closeDriver()
+				}else {
+					WebUI.closeBrowser()
+				}
+//			}catch(Exception e) {
+//				KeywordUtil.logInfo("driver is already closed")
+//			}
 		}
 }
