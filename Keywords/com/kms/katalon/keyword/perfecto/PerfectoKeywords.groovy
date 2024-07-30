@@ -1,42 +1,6 @@
 package com.kms.katalon.keyword.perfecto
-import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
-import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
-import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
-import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
+import java.text.SimpleDateFormat
 
-import com.kms.katalon.core.annotation.Keyword
-import com.kms.katalon.core.checkpoint.Checkpoint
-import com.kms.katalon.core.checkpoint.CheckpointFactory
-import com.kms.katalon.core.context.TestCaseContext
-import com.kms.katalon.core.context.TestSuiteContext
-import com.kms.katalon.core.exception.StepFailedException
-import com.kms.katalon.core.keyword.internal.KeywordExecutor
-import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords
-import com.kms.katalon.core.model.FailureHandling
-import com.kms.katalon.core.testcase.TestCase
-import com.kms.katalon.core.testcase.TestCaseFactory
-import com.kms.katalon.core.testdata.TestData
-import com.kms.katalon.core.testdata.TestDataFactory
-import com.kms.katalon.core.testobject.ObjectRepository
-import com.kms.katalon.core.testobject.TestObject
-import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords
-import com.perfecto.reportium.client.ReportiumClient
-import com.perfecto.reportium.model.PerfectoExecutionContext
-import com.perfecto.reportium.model.PerfectoExecutionContext.PerfectoExecutionContextBuilder
-import com.perfecto.reportium.test.TestContext
-import com.kms.katalon.core.configuration.RunConfiguration
-import groovy.transform.CompileStatic
-import internal.GlobalVariable
-import io.appium.java_client.AppiumDriver
-import io.appium.java_client.android.AndroidDriver
-import io.appium.java_client.ios.IOSDriver
-
-import com.perfecto.reportium.client.ReportiumClientFactory;
-import com.perfecto.reportium.model.Project;
-import com.perfecto.reportium.model.Job;
-import org.openqa.selenium.WebElement
-import org.openqa.selenium.WebDriver
-import org.apache.commons.lang3.time.StopWatch
 import org.apache.http.HttpResponse
 import org.apache.http.client.ClientProtocolException
 import org.apache.http.client.HttpClient
@@ -48,34 +12,40 @@ import org.apache.http.entity.mime.content.ContentBody
 import org.apache.http.entity.mime.content.FileBody
 import org.apache.http.entity.mime.content.StringBody
 import org.apache.http.impl.client.HttpClientBuilder
+import org.json.JSONArray
 import org.json.JSONObject
-import org.openqa.selenium.By
-
-import com.kms.katalon.core.mobile.keyword.internal.MobileDriverFactory
-import com.kms.katalon.core.webui.constants.StringConstants
-import com.kms.katalon.core.webui.driver.DriverFactory
-import com.kms.katalon.core.webui.driver.WebMobileDriverFactory
-import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
-import com.kms.katalon.core.testobject.RequestObject
-import com.kms.katalon.core.testobject.ResponseObject
-import com.kms.katalon.core.testobject.ConditionType
-import com.kms.katalon.core.testobject.TestObjectProperty
-
-import com.kms.katalon.core.mobile.helper.MobileElementCommonHelper
-import com.kms.katalon.core.util.KeywordUtil
-
-import com.kms.katalon.core.webui.exception.WebElementNotFoundException
-import com.kms.katalon.core.appium.driver.AppiumDriverManager
-import com.kms.katalon.core.mobile.driver.MobileDriverType
-import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords
+import org.openqa.selenium.WebDriver
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver
-import org.openqa.selenium.Platform;
+
+import com.kms.katalon.core.annotation.Keyword
+import com.kms.katalon.core.appium.driver.AppiumDriverManager
+import com.kms.katalon.core.configuration.RunConfiguration
+import com.kms.katalon.core.context.TestCaseContext
+import com.kms.katalon.core.exception.StepFailedException
+import com.kms.katalon.core.mobile.driver.MobileDriverType
+import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as Mobile
+import com.kms.katalon.core.util.KeywordUtil
+import com.kms.katalon.core.webui.constants.StringConstants
+import com.kms.katalon.core.webui.driver.DriverFactory
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords;
-import java.net.URL;
-import java.nio.file.Paths
-import java.util.Map
+import com.perfecto.reportium.client.ReportiumClient
+import com.perfecto.reportium.client.ReportiumClientFactory;
+import com.perfecto.reportium.model.Job;
+import com.perfecto.reportium.model.PerfectoExecutionContext
+import com.perfecto.reportium.model.Project;
+import com.perfecto.reportium.model.PerfectoExecutionContext.PerfectoExecutionContextBuilder
+import com.perfecto.reportium.test.TestContext
+
+import groovy.transform.CompileStatic
+import internal.GlobalVariable
+import io.appium.java_client.AppiumDriver
+import io.appium.java_client.android.AndroidDriver
+import io.appium.java_client.ios.IOSDriver
+import okhttp3.MediaType
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 class PerfectoKeywords extends WebUiBuiltInKeywords{
@@ -147,10 +117,28 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 			katalonWebDriver = DriverFactory.getWebDriver();
 		}
 		else {
-			//Creating Mobile Driver
+			//Creating Mobile Driver.
+			//If applicationID and appPath both are passed, it would ignore appPath and use applicationID capab
 			String browserName = (String)caps.get("browserName")
+			String appID = ""
+			try {
+				appID = GlobalVariable.applicationID
+			} catch(MissingPropertyException e) {
+				KeywordUtil.logInfo("[PERFECTO]: Add global variable 'applicationID' in profile to start the application with application id")
+			}
 			if(browserName=="") {
-				caps.put("app", path)
+				if(appID=="" || appID==null) {
+					if(path.endsWith(".apk") || path.endsWith(".apks") || path.endsWith(".ipa") || path.endsWith(".zip"))
+						caps.put("app", path)
+					else
+						caps.put("app", getLatestBuild(path) ) // ADD FUNCTION TO FETCH LATEST BUILD FOR 'path'
+				}
+				else {
+					if(platformName.equalsIgnoreCase("IOS"))
+						caps.put("bundleId", appID)
+					else
+						caps.put("appPackage",appID)
+				}
 			}
 			AppiumDriver driver = null;
 			if(platformName.equalsIgnoreCase("Android")){
@@ -162,14 +150,85 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 			}
 			if(browserName=="") {
 				//Registering Native Driver
+				KeywordUtil.logInfo("Starting context in NativeView driver mode")
 				AppiumDriverManager.setDriver(driver)
 			}else {
 				//Registering Mobile Web Driver
+				KeywordUtil.logInfo("Starting context in WebView driver mode")
 				DriverFactory.changeWebDriver(katalonWebDriver)
 			}
 		}
 		return katalonWebDriver
 	}
+
+
+	/*
+	 * 
+	 * To fetch latest build from the location Perfecto repository location 'path' specified
+	 * 
+	 */
+	private static String getLatestBuild(String path) {
+		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
+		String platformType = caps.get("platformName")
+		String cloud = (String)caps.get("cloud")
+		String cloudName = cloud.split(".perfectomobile")[0]
+		String token = (String)caps.get("securityToken")
+
+		OkHttpClient client = new OkHttpClient().newBuilder().build()
+		Request request = new Request.Builder()
+				.url("https://"+cloudName+".app.perfectomobile.com/repository/api/v1/artifacts?artifactType="+platformType.toUpperCase())
+				.method("GET", null)
+				.addHeader("Perfecto-Authorization", token)
+				.build()
+		Response response = client.newCall(request).execute()
+		String jsonResponseString = response.body().string()
+
+		JSONObject jsonObj = new JSONObject(jsonResponseString)
+		JSONArray jsonArr = new JSONArray(jsonObj.getJSONArray("artifacts").toString())
+
+		String uploadedTime
+		String uploadedArtifact
+		String latestAppBuildPath = ""
+
+		TreeMap<Long, String> mapLastUploaded = new TreeMap<Long, String>()
+		String uploadedTimeStr = ""
+
+		for(int i=0; i<jsonArr.length(); i++) {
+			uploadedTimeStr = jsonArr.getJSONObject(i).getJSONObject("usageMetadata").get("creationTime").toString()
+			uploadedTime = dateFormatUnixToHumanReadFormat(uploadedTimeStr.toString())
+			uploadedArtifact = jsonArr.getJSONObject(i).getString("artifactLocator")
+
+			String[] locator = path.split(":")
+
+			if(locator.length>1)
+				path = locator[0].toUpperCase()+":"+locator[1]
+			else
+				path = path.toUpperCase()
+
+			if( uploadedArtifact.startsWith(path) ) {
+				mapLastUploaded.put(Long.parseLong(uploadedTimeStr), jsonArr.getJSONObject(i).getString("artifactLocator"))
+				latestAppBuildPath = mapLastUploaded.lastEntry().getValue()
+			}
+		}
+
+		//		KeywordUtil.logInfo("[PERFECTO] Total App builds: 	" 	+jsonArr.length())
+		KeywordUtil.logInfo("[PERFECTO] Fetching the latest app build from the specified location: '" +GlobalVariable.appPath+ "'")
+		KeywordUtil.logInfo("[PERFECTO] Latest App Uploaded timestamp: 	" 	+dateFormatUnixToHumanReadFormat(mapLastUploaded.lastEntry().getKey().toString()))
+		KeywordUtil.logInfo("[PERFECTO] Latest App Build installing: 	" 	+latestAppBuildPath)
+
+		return latestAppBuildPath
+
+	}
+
+	private static String dateFormatUnixToHumanReadFormat(String unixTimeStamp) {
+		Date date = new Date(Long.parseLong(unixTimeStamp));
+		SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.CANADA);
+
+		String formattedDate = sdf2.format(date);
+
+		return formattedDate;
+	}
+
 
 	@CompileStatic
 	static WebDriver getDriver(String path) {
@@ -284,14 +343,14 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 	 * Example:
 	 * uploadMedia("C:\\test\\ApiDemos.apk", "PRIVATE:apps/ApiDemos.apk");
 	 */
-//	@CompileStatic
-//	@Keyword(keywordObject = StringConstants.KW_CATEGORIZE_UTILITIES)
-//	private static void uploadMediaOldAPI(String path, String repositoryKey) throws IOException {
-//		File file = new File(path);
-//		byte[] content = readFile(file);
-//		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
-//		uploadMedia((String)caps.get("cloud"), (String)caps.get("securityToken"), content, repositoryKey);
-//	}
+	//	@CompileStatic
+	//	@Keyword(keywordObject = StringConstants.KW_CATEGORIZE_UTILITIES)
+	//	private static void uploadMediaOldAPI(String path, String repositoryKey) throws IOException {
+	//		File file = new File(path);
+	//		byte[] content = readFile(file);
+	//		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
+	//		uploadMedia((String)caps.get("cloud"), (String)caps.get("securityToken"), content, repositoryKey);
+	//	}
 
 	/**
 	 * Uploads a file to the media repository.
@@ -299,57 +358,57 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 	 * URL url = new URL("http://file.appsapk.com/wp-content/uploads/downloads/Sudoku%20Free.apk");
 	 * uploadMedia("demo.perfectomobile.com", "john@perfectomobile.com", "123456", url, "PRIVATE:apps/ApiDemos.apk");
 	 */
-//	@CompileStatic
-//	@Keyword(keywordObject = StringConstants.KW_CATEGORIZE_UTILITIES)
-//	private static void uploadMedia( URL mediaURL, String repositoryKey) throws IOException {
-//		
-//		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
-//		String cloud = (String)caps.get("cloud");
-//		System.out.println(cloud);
-//		String cloudName = cloud.split(".perfectomobile")[0];
-//		String token = (String)caps.get("securityToken");
-//		//		StopWatch stopwatch = new StopWatch();
-//		System.out.println("Upload Started");
-//		URIBuilder taskUriBuilder = new URIBuilder("https://"+cloudName+".app.perfectomobile.com/repository/api/v1/artifacts");
-//		HttpClient httpClient = HttpClientBuilder.create().build();
-//		HttpPost httppost = new HttpPost(taskUriBuilder.build());
-//		httppost.setHeader("Perfecto-Authorization", token);
-//		MultipartEntityBuilder mpEntity = MultipartEntityBuilder.create();
-//		File packagedFile = Paths.get(mediaURL.toURI()).toFile();
-//		ContentBody inputStream = new FileBody(packagedFile, ContentType.APPLICATION_OCTET_STREAM);
-//		JSONObject req = new JSONObject();
-//		req.put("artifactLocator", repositoryKey);
-//		req.put("override", true);
-//		String rp = req.toString();
-//
-//		ContentBody requestPart = new StringBody(rp, ContentType.APPLICATION_JSON);
-//		mpEntity.addPart("inputStream", inputStream);
-//		mpEntity.addPart("requestPart", requestPart);
-//		httppost.setEntity(mpEntity.build());
-//		HttpResponse response = httpClient.execute(httppost);
-//		int statusCode = response.getStatusLine().getStatusCode();
-//		System.out.println("Status Code = " + statusCode);
-//		
-////		byte[] content = readURL(mediaURL);
-////		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
-////		uploadMedia((String)caps.get("cloud"), (String)caps.get("securityToken"), content, repositoryKey);
-//	}
+	//	@CompileStatic
+	//	@Keyword(keywordObject = StringConstants.KW_CATEGORIZE_UTILITIES)
+	//	private static void uploadMedia( URL mediaURL, String repositoryKey) throws IOException {
+	//
+	//		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
+	//		String cloud = (String)caps.get("cloud");
+	//		System.out.println(cloud);
+	//		String cloudName = cloud.split(".perfectomobile")[0];
+	//		String token = (String)caps.get("securityToken");
+	//		//		StopWatch stopwatch = new StopWatch();
+	//		System.out.println("Upload Started");
+	//		URIBuilder taskUriBuilder = new URIBuilder("https://"+cloudName+".app.perfectomobile.com/repository/api/v1/artifacts");
+	//		HttpClient httpClient = HttpClientBuilder.create().build();
+	//		HttpPost httppost = new HttpPost(taskUriBuilder.build());
+	//		httppost.setHeader("Perfecto-Authorization", token);
+	//		MultipartEntityBuilder mpEntity = MultipartEntityBuilder.create();
+	//		File packagedFile = Paths.get(mediaURL.toURI()).toFile();
+	//		ContentBody inputStream = new FileBody(packagedFile, ContentType.APPLICATION_OCTET_STREAM);
+	//		JSONObject req = new JSONObject();
+	//		req.put("artifactLocator", repositoryKey);
+	//		req.put("override", true);
+	//		String rp = req.toString();
+	//
+	//		ContentBody requestPart = new StringBody(rp, ContentType.APPLICATION_JSON);
+	//		mpEntity.addPart("inputStream", inputStream);
+	//		mpEntity.addPart("requestPart", requestPart);
+	//		httppost.setEntity(mpEntity.build());
+	//		HttpResponse response = httpClient.execute(httppost);
+	//		int statusCode = response.getStatusLine().getStatusCode();
+	//		System.out.println("Status Code = " + statusCode);
+	//
+	////		byte[] content = readURL(mediaURL);
+	////		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
+	////		uploadMedia((String)caps.get("cloud"), (String)caps.get("securityToken"), content, repositoryKey);
+	//	}
 
 	/**
 	 * Uploads content to the media repository.
 	 * Example:
 	 * uploadMedia("demo.perfectomobile.com", "john@perfectomobile.com", "123456", content, "PRIVATE:apps/ApiDemos.apk");
 	 */
-//	private static void uploadMedia(String host, String securityToken, byte[] content, String repositoryKey) throws UnsupportedEncodingException, MalformedURLException, IOException {
-//		if (content != null) {
-//			String encodedSecurityToken = URLEncoder.encode(securityToken, "UTF-8");
-//			//			String encodedPassword = URLEncoder.encode(password, "UTF-8");
-//			String urlStr = HTTPS + host + MEDIA_REPOSITORY + repositoryKey + "?" + UPLOAD_OPERATION + "&securityToken=" + encodedSecurityToken;
-//			URL url = new URL(urlStr);
-//
-//			sendRequest(content, url);
-//		}
-//	}
+	//	private static void uploadMedia(String host, String securityToken, byte[] content, String repositoryKey) throws UnsupportedEncodingException, MalformedURLException, IOException {
+	//		if (content != null) {
+	//			String encodedSecurityToken = URLEncoder.encode(securityToken, "UTF-8");
+	//			//			String encodedPassword = URLEncoder.encode(password, "UTF-8");
+	//			String urlStr = HTTPS + host + MEDIA_REPOSITORY + repositoryKey + "?" + UPLOAD_OPERATION + "&securityToken=" + encodedSecurityToken;
+	//			URL url = new URL(urlStr);
+	//
+	//			sendRequest(content, url);
+	//		}
+	//	}
 
 	private static void sendRequest(byte[] content, URL url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -473,5 +532,50 @@ class PerfectoKeywords extends WebUiBuiltInKeywords{
 		HttpResponse response = httpClient.execute(httppost);
 		int statusCode = response.getStatusLine().getStatusCode();
 		System.out.println("Status Code = " + statusCode);
+	}
+
+	public static void generateSummaryPDF() {
+		KeywordUtil.logInfo("[PERFECTO] Starting to generate Perfecto Summary PDF...");
+		Mobile.delay(10)
+		
+		Map<String, Object> caps = (Map<String, Object>)RunConfiguration.getDriverPreferencesProperties().get("Remote")
+		String cloud = (String)caps.get("cloud")
+		String cloudName = cloud.split(".perfectomobile")[0]
+		String token = (String)caps.get("securityToken")
+
+		String jobName = GlobalVariable.jobName
+		String jobNumber = GlobalVariable.jobNumber
+
+		OkHttpClient client = new OkHttpClient().newBuilder().build()
+		MediaType mediaType = MediaType.parse("text/plain")
+		Request request = new Request.Builder()
+				.url("https://"+cloudName+".app.perfectomobile.com/export/api/v1/test-executions/pdf?jobName[0]="+jobName+"&jobNumber[0]="+jobNumber)
+				.addHeader("PERFECTO-AUTHORIZATION", token)
+				.build()
+
+		try {
+			Response response = client.newCall(request).execute()
+
+			if (!response.isSuccessful())
+				throw new IOException("Unexpected code " + response)
+
+			String summaryFilePath = RunConfiguration.getProjectDir() +"/"+ "Reports" +"/"+ "Perfecto"
+			String summaryFileName = "Summary_"+jobName.replace(" ", "")+"_"+jobNumber+".pdf"
+
+			File file = new File(summaryFilePath +"/"+ summaryFileName)
+			try {
+				if(!file.exists())
+					file.getParentFile().mkdir()
+
+				FileOutputStream fos = new FileOutputStream(file)
+				fos.write(response.body().bytes());
+				KeywordUtil.logInfo("[PERFECTO] Successfully generated Perfecto summary pdf file")
+			} catch (IOException e) {
+				KeywordUtil.logInfo("[PERFECTO] Error in writing summary pdf to file")
+			}
+		}catch(Exception e) {
+			KeywordUtil.logInfo("[PERFECTO] Error with API call to generate Perfecto summary pdf file")
+		}
+
 	}
 }
